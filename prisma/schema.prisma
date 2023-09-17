@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type FeedbacksComments {
+  content String
+  id      String
+  replies FeedbacksCommentsReplies[]
+  user    UserType
+}
+
+type FeedbacksCommentsReplies {
+  content    String
+  replyingTo String
+  user       UserType
+  id         String
+}
+
+type UserType {
+  image    String
+  name     String
+  username String
+}
+
+model Feedback {
+  id          String              @id @default(auto()) @map("_id") @db.ObjectId
+  category    String
+  comments    FeedbacksComments[]
+  description String
+  status      String              @default("suggestion")
+  title       String
+  upvotes     Int                 @default(0)
+}
+
+model User {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  image             String
+  name              String
+  username          String
+  upvoteFeedbackIDs String[]
+}
